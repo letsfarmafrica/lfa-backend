@@ -1,0 +1,25 @@
+# Use root/example as user/password credentials
+version: '3.1'
+
+services:
+
+  mongodb:
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    ports:
+      - 27017:27017
+
+  users_registration:
+        build: .
+        ports:
+        - 5000:5000
+        volumes:
+        - .:/srv/service
+        env_file: test_environment.env
+
+        command: uvicorn --reload --host=0.0.0.0 --port 5000 --log-level=debug --reload users_registration:app
+        depends_on:
+        - mongodb
