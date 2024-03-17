@@ -15,7 +15,7 @@ class User(BaseModel):
     password:str
     products_bucket_list: list
     last_product_date: datetime
-    polygon: object
+    geometry: object
 
 
 

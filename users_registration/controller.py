@@ -12,13 +12,13 @@ class Controller:
 
     def __init__(self):
         self.logged_in = False
-        uri = "mongodb://%s:%s@%s" % (quote_plus(config.DB_ROOT), quote_plus(config.DB_USERNAME), config.DB_HOST)
+        uri =  f"mongodb://{quote_plus(config.DB_ROOT)}:{quote_plus(config.DB_USERNAME)}@{config.DB_HOST}:{config.DB_PORT}/"
         try:
             self.client = MongoClient(uri, serverSelectionTimeoutMS=2000)
             self.db = self.client[config.DB_NAME]
             self.collection = self.db[config.DB_COLLECTION]
         except Exception as e:
-            print(e.message)
+            raise(Exception)
 
     def create_user(self, database, user, password):
         database.command('createUser', user, pwd=password, roles=['readWrite'])
@@ -37,7 +37,9 @@ class Controller:
             new_user = {
                 'email': newUser.email,
                 'password': hash,
-                'polygon': newUser.polygon
+                'geometry': newUser.geometry,
+                'last_product_date': newUser.last_product_date,
+                'products_bucket_list': newUser.products_bucket_list,
             }
             self.collection.insert_one(new_user)
 
@@ -75,8 +77,8 @@ class Controller:
         user_object = self.collection.find_one({'email': email})
         return user_object
 
-    def update_geometry(self, polygon, email):
-        new_values = {"$set": {'polygon': polygon}}
+    def update_geometry(self, geometry, email):
+        new_values = {"$set": {'geometry': geometry}}
 
         self.collection.update_one({'email': email}, new_values)
 
