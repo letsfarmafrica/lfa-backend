@@ -14,7 +14,7 @@ geometry:
     type: "geojson geometry"
 
 products_bucket_list:
-    description:  "list pf the previous downloaded products"
+    description:  "list of previous downloaded products"
     type: "list"
 
 last_product_date:
